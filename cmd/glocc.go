@@ -5,6 +5,8 @@ All rights reserved.
 This software may be modified and distributed under the terms
 of the BSD 3-Clause License. See the LICENSE file for details.
 */
+
+// The glocc command line tool.
 package main
 
 import (
@@ -20,7 +22,9 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 }
 
-//
+// Print the total results to the standard output in JSON format. This is the
+// default and only way to display them for now (other than printing the raw
+// Go map, which sucks).
 func displayJSON(res glocc.DirResult) {
 	if output, err := json.MarshalIndent(res, "", "    "); err != nil {
 		fmt.Println(res)
