@@ -1,3 +1,10 @@
+/*
+Copyright (C) 2017, Christos Katsakioris
+All rights reserved.
+
+This software may be modified and distributed under the terms
+of the BSD 3-Clause License. See the LICENSE file for details.
+*/
 package glocc
 
 import (
@@ -11,13 +18,18 @@ import (
 // directory are gathered in a DirResult.
 //
 // A DirResult contains the following fields:
+//
 // - Name is the full name of the subdirectory it represents, as a string.
+//
 // - Subdirs is a slice of DirResult. Each element in the slice, represents the
 // results of counting lines of code in a subdirectory under the directory
 // associated with this DirResult.
+//
 // - Files is a slice of FileResult. Each element in the slice represents the
 // results of counting lines of code in a file living under the directory
 // associated with this DirResult.
+//
+// - Summary provides a summary of the results of the counting.
 type DirResult struct {
 	Name    string         `json:"name" yaml:"Name"`
 	Subdirs DirResults     `json:"subdirs,omitempty" yaml:"subdirs,omitempty"`
