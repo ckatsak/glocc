@@ -6,7 +6,7 @@ This software may be modified and distributed under the terms
 of the BSD 3-Clause License. See the LICENSE file for details.
 */
 
-// A package implementing a very fast, parallel counter of lines of code in
+// Package glocc implements a very fast, parallel counter of lines of code in
 // files and directories.
 //
 // It also includes a command line tool, glocc, which is extremely fast and

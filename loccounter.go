@@ -10,7 +10,6 @@ package glocc
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -23,8 +22,8 @@ var (
 	globalStateCode    = &stateCode{}
 )
 
-// The core entity of the package, which initiates and later holds the state
-// of the counting for a single file.
+// LocCounter is the core entity of the package, which initiates and later
+// holds the state of the counting for a single file.
 // It is associated to the counting of a single file, and created in the
 // goroutine that is assigned to count the file.
 type LocCounter struct {
@@ -40,12 +39,12 @@ type LocCounter struct {
 	stateMultiLineComment *stateMultiLineComment
 }
 
-// Get a new LocCounter, properly initialized to count the lines of code in a
-// specific file of a specific language.
+// NewLocCoutner returns a new LocCounter, properly initialized to count the
+// lines of code in a specific file of a specific language.
 // Returns an error if a supported language cannot be detected.
 func NewLocCounter(file *os.File, ext string) (lc *LocCounter, err error) {
 	if lang, valid := languages[ext]; !valid {
-		err = errors.New(fmt.Sprintf("Cannot deduce a supported language from extension %q.", ext))
+		err = fmt.Errorf("Cannot deduce a supported language from extension %q.", ext)
 	} else {
 		lc = &LocCounter{
 			language: lang,
@@ -57,8 +56,8 @@ func NewLocCounter(file *os.File, ext string) (lc *LocCounter, err error) {
 	return
 }
 
-// This is the only exported method of LocCounter. It basically reads, line by
-// line, the content of the file associated with the LocCounter, and performs
+// Count is the only exported method of LocCounter. It basically reads (line by
+// line) the content of the file associated with the LocCounter, and performs
 // the counting. It is implemented using the State design pattern.
 func (lc *LocCounter) Count() (int, error) {
 	logger.Printf("DEBUG LocCounter.Count() for file %q: Starting...\n", lc.file.Name())
@@ -237,7 +236,7 @@ func (s *stateCode) process(lc *LocCounter) bool {
 			firstMultiLineCommToken = t
 		}
 	}
-	// If a multi-line comment starting token was found before the first occurence of an inline comment token
+	// If a multi-line comment starting token was found before the first occurrence of an inline comment token
 	if firstMultiLineCommTokenIdx < firstInlineCommTokenIdx {
 		logger.Printf("DEBUG Multi-line comment start found at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
 		// If it wasn't in the beginning of the line

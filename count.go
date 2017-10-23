@@ -16,8 +16,9 @@ import (
 	"time"
 )
 
-// The results of counting lines of code in every file and subdirectory of a
-// directory are gathered in a DirResult.
+// DirResults is a tree-like (thus recursive) data structure used to store the
+// results of the count for all files and subdirectories that live under the
+// directory associated with a directory.
 //
 // A DirResult contains the following fields:
 //
@@ -39,12 +40,11 @@ type DirResult struct {
 	Summary map[string]int `json:"summary" yaml:"Summary"`
 }
 
-// A slice of DirResult.
+// DirResults is a slice of DirResult.
 type DirResults []DirResult
 
-// The results of counting lines of code in a file are stored in a FileResult,
-// which is eventually placed in the DirResult associated with the directory
-// that the file lives under.
+// FileResult is a simple data structure used to store the results of a single
+// file's count. FileResult structs typically live inside DirResult structs.
 type FileResult struct {
 	Name string         `json:"name" yaml:"Name"`
 	Loc  map[string]int `json:"loc" yaml:"loc"`
@@ -57,20 +57,20 @@ func init() {
 	logger = log.New(ioutil.Discard, "glocc: ", log.Ltime|log.Lmicroseconds|log.Lshortfile)
 }
 
-// Calling this function enables verbose logging to standard error stream using
-// a package-level logger.
+// EnableLogging enables verbose logging to standard error stream using a
+// package-level logger.
 // This might be useful for debugging.
 func EnableLogging() {
 	logger.SetOutput(os.Stderr)
 }
 
-// Calling this function disables verbose logging to standard error stream
-// using the package-level logger.
+// DisableLogging disables verbose logging to standard error stream using the
+// package-level logger.
 func DisableLogging() {
 	logger.SetOutput(ioutil.Discard)
 }
 
-// This function is the exported interface of glocc package, meant to be called
+// CountLoc is the main exported interface of glocc package, meant to be called
 // once for each top-level directory in which counting lines of code is needed.
 // It returns a DirResult that contains the results of the counting.
 func CountLoc(root string) DirResult {

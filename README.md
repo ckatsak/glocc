@@ -1,6 +1,7 @@
 # glocc
 
 [![GoDoc](https://godoc.org/github.com/ckatsak/glocc?status.png)](https://godoc.org/github.com/ckatsak/glocc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ckatsak/glocc)](https://goreportcard.com/badge/github.com/ckatsak/glocc)
 
 `glocc` is a package implementing a very fast, parallel counter of lines of
 code in files and directories.
@@ -62,6 +63,6 @@ operating system threads that a Go program can use, using SetMaxThreads() of
 runtime/debug; the default value is set to 10000 threads. However, mind that
 (quoted from the [official documentation](https://golang.org/pkg/runtime/debug/#SetMaxThreads)):
 
-SetMaxThreads is useful mainly for limiting the damage done by programs
-that create an unbounded number of threads. The idea is to take down
-the program before it takes down the operating system.
+> SetMaxThreads is useful mainly for limiting the damage done by programs
+> that create an unbounded number of threads. The idea is to take down
+> the program before it takes down the operating system.
