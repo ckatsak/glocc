@@ -28,13 +28,13 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // Simply run it with any number of files or directories as command line
 // arguments:
 //
-//	$ glocc ~/foo ~/bar
+//	$ glocc ~/foo src/bar
 //
 // By default, only a summary of all counted lines is printed to the standard
 // output. To print the results extensively in a tree-like format, it can be
 // executed with the -a flag:
 //
-//	$ glocc -a baz.go ~/foo
+//	$ glocc -a baz.go ~/src/foo
 //
 // The results can be printed in YAML (default) or JSON format, using the -o
 // flag:
@@ -43,7 +43,7 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 //
 // Running it with the -h flag shows all options available.
 //
-// glocc as a package
+// Using the glocc package
 //
 // For use as a package, glocc exports `func CountLoc(root string) DirResult`,
 // which, given a root directory, returns a struct of type DirResult, a custom
@@ -59,13 +59,16 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // Known Issue
 //
 // For now, really huge source trees, like the Linux kernel source tree, might
-// crash glocc, due the big number of blocked OS threads trying to handle the
-// huge number of goroutines spawned. To be more precise, the problem is:
+// rarely cause glocc to crash, due the big number of blocked OS threads trying
+// to handle the huge number of goroutines spawned. To be more precise, the
+// exact problem is reported as:
 //
 //	$ glocc ./linux
 // 	runtime: program exceeds 10000-thread limit
 // 	fatal error: thread exhaustion
 //
+// It cannot occur in small and medium-sized codebases, and it's also unlikely
+// to occur in bigger ones too. Just be warned.
 // I plan to hack around this problem once I have the time; maybe using some
 // kind of pool or something, or by spawning the goroutines in some clever way.
 // As long as this note is here though, the bug is probably still around.
