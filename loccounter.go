@@ -61,7 +61,7 @@ func NewLocCounter(file *os.File, ext string) (lc *LocCounter, err error) {
 // line, the content of the file associated with the LocCounter, and performs
 // the counting. It is implemented using the State design pattern.
 func (lc *LocCounter) Count() (int, error) {
-	logger.Printf("LocCounter.Count() for file %q: Starting...\n", lc.file.Name())
+	logger.Printf("DEBUG LocCounter.Count() for file %q: Starting...\n", lc.file.Name())
 	fsc := bufio.NewScanner(lc.file)
 	for fsc.Scan() {
 		lc.fileLinesCnt++
@@ -71,18 +71,18 @@ func (lc *LocCounter) Count() (int, error) {
 		for !lc.state.process(lc) {
 		}
 		if lc.currLineCounted {
-			logger.Printf("%q:%d --> Counted\n", lc.file.Name(), lc.fileLinesCnt)
+			logger.Printf("DEBUG %q:%d --> Counted\n", lc.file.Name(), lc.fileLinesCnt)
 			lc.loc++
 		} else {
-			logger.Printf("%q:%d --> Discarded\n", lc.file.Name(), lc.fileLinesCnt)
+			logger.Printf("DEBUG %q:%d --> Discarded\n", lc.file.Name(), lc.fileLinesCnt)
 		}
 	}
 	if err := fsc.Err(); err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 		return lc.loc, err
 	}
 
-	logger.Printf("LocCounter.Count() for file %q: Finished.\n", lc.file.Name())
+	logger.Printf("DEBUG LocCounter.Count() for file %q: Finished.\n", lc.file.Name())
 	return lc.loc, nil
 }
 
@@ -110,7 +110,7 @@ func (lc *LocCounter) inlineCommentIndex() int {
 		}
 	}
 	if firstInlineCommTokenIdx < len(lc.currLine) {
-		logger.Printf("Inline comment token found at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
+		logger.Printf("DEBUG Inline comment token found at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
 	}
 	return firstInlineCommTokenIdx
 }
@@ -145,7 +145,7 @@ func (s *stateInitial) process(lc *LocCounter) bool {
 	}
 	// If a multi-line comment starting token was found before the first inline comment token
 	if firstMultiLineCommTokenIdx < firstInlineCommTokenIdx {
-		logger.Printf("Multi-line comment starting at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
+		logger.Printf("DEBUG Multi-line comment starting at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
 		// If it wasn't in the beginning of the line
 		if firstMultiLineCommTokenIdx > 0 {
 			lc.currLineCounted = true
@@ -202,7 +202,7 @@ func (s *stateMultiLineComment) process(lc *LocCounter) bool {
 	}
 	// If a multi-line comment ending token was found
 	if firstMultiLineCommTokenIdx < len(lc.currLine) {
-		logger.Printf("Multi-line comment ending at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
+		logger.Printf("DEBUG Multi-line comment ending at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
 		s.token = ""
 		lc.currLine = strings.TrimLeft(lc.currLine[(firstMultiLineCommTokenIdx+len(firstMultiLineCommToken)):], " \t")
 		lc.setState(globalStateCode)
@@ -239,7 +239,7 @@ func (s *stateCode) process(lc *LocCounter) bool {
 	}
 	// If a multi-line comment starting token was found before the first occurence of an inline comment token
 	if firstMultiLineCommTokenIdx < firstInlineCommTokenIdx {
-		logger.Printf("Multi-line comment start found at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
+		logger.Printf("DEBUG Multi-line comment start found at %q:%d\n", lc.file.Name(), lc.fileLinesCnt)
 		// If it wasn't in the beginning of the line
 		if firstMultiLineCommTokenIdx > 0 {
 			lc.currLineCounted = true
@@ -259,7 +259,7 @@ func (s *stateCode) process(lc *LocCounter) bool {
 //
 // Credits to:
 // https://groups.google.com/forum/#!topic/golang-nuts/oPuBaYJ17t4
-// from which it was shamelessly stolen. :D
+// from which it was shamelessly copied. :D
 func reversed(s string) string {
 	// Get Unicode code points
 	n := 0

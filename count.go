@@ -9,6 +9,7 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 package glocc
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -53,7 +54,20 @@ type FileResult struct {
 var logger *log.Logger
 
 func init() {
-	logger = log.New(os.Stderr, "glocc: ", log.Ltime|log.Lmicroseconds|log.Lshortfile)
+	logger = log.New(ioutil.Discard, "glocc: ", log.Ltime|log.Lmicroseconds|log.Lshortfile)
+}
+
+// Calling this function enables verbose logging to standard error stream using
+// a package-level logger.
+// This might be useful for debugging.
+func EnableLogging() {
+	logger.SetOutput(os.Stderr)
+}
+
+// Calling this function disables verbose logging to standard error stream
+// using the package-level logger.
+func DisableLogging() {
+	logger.SetOutput(ioutil.Discard)
 }
 
 // This function is the exported interface of glocc package, meant to be called
@@ -69,12 +83,13 @@ func CountLoc(root string) DirResult {
 	}
 	rootPath, err := filepath.Abs(root)
 	if err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 		return result
 	}
 	fileinfo, err := os.Stat(rootPath)
-	if os.IsNotExist(err) {
-		logger.Println(err)
+	if err != nil {
+		//if os.IsNotExist(err) {  // XXX What did I want this?
+		logger.Println("ERROR", err)
 		return result
 	}
 	if fileinfo.IsDir() {
@@ -86,7 +101,7 @@ func CountLoc(root string) DirResult {
 		result.Files = []FileResult{fileResult}
 		result.Summary = fileResult.Loc
 	}
-	logger.Printf("Time elapsed for %q: %s\n", root, time.Since(start))
+	logger.Printf("INFO Time elapsed for %q: %s\n", root, time.Since(start))
 	return result
 }
 
@@ -100,19 +115,19 @@ func locDir(rootPath string) DirResult {
 		Summary: make(map[string]int),
 	}
 	if filepath.Base(rootPath) == ".git" {
-		logger.Printf("Skipping %q.\n", rootPath)
+		logger.Printf("INFO Skipping %q.\n", rootPath)
 		return result
 	}
 	// open(2) the directory to readdir(2) and stat(2) it.
 	dir, err := os.Open(rootPath)
 	if err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 		return result
 	}
 	defer dir.Close()
 	fileinfoz, err := dir.Readdir(0)
 	if err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 		return result
 	}
 
@@ -133,7 +148,7 @@ func locDir(rootPath string) DirResult {
 				fileResultsChan <- locFile(filename)
 			}(filename)
 		} else {
-			logger.Printf("Skipping non-regular and non-directory file %q.\n", filename)
+			logger.Printf("INFO Skipping non-regular and non-directory file %q.\n", filename)
 		}
 	}
 
@@ -174,7 +189,7 @@ func locFile(filename string) FileResult {
 
 	file, err := os.Open(filename)
 	if err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 		return result
 	}
 	defer file.Close()
@@ -190,12 +205,12 @@ func locFile(filename string) FileResult {
 	}
 	locCounter, err := NewLocCounter(file, ext)
 	if err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 		return result
 	}
 
 	if loc, err := locCounter.Count(); err != nil {
-		logger.Println(err)
+		logger.Println("ERROR", err)
 	} else {
 		result.Loc[languages[ext].name] = loc
 		result.Name = filepath.Base(filename)
