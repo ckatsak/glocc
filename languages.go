@@ -170,6 +170,13 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{},
 	},
 	{
+		name:                           "Markdown",
+		extensions:                     []string{"md"},
+		inlineCommentTokens:            []string{},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
 		name:                           "Matlab",
 		extensions:                     []string{"m"},
 		inlineCommentTokens:            []string{`%`},
@@ -271,6 +278,13 @@ var allLanguages = []language{
 		name:                           "TeX",
 		extensions:                     []string{"tex"},
 		inlineCommentTokens:            []string{`%`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "plain text",
+		extensions:                     []string{"txt"},
+		inlineCommentTokens:            []string{},
 		multiLineCommentStartingTokens: []string{},
 		multiLineCommentEndingTokens:   []string{},
 	},

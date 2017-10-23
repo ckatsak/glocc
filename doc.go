@@ -6,37 +6,42 @@ This software may be modified and distributed under the terms
 of the BSD 3-Clause License. See the LICENSE file for details.
 */
 
-// Package glocc implements a very fast, parallel counter of lines of code in
-// files and directories.
+// Package glocc implements a relatively fast, parallel counter of lines of
+// code in files and directories.
 //
-// It also includes a command line tool, glocc, which is extremely fast and
-// handy for performing such counting and pretty printing, either briefly or
-// extensively, the results.
+// It also includes a command line tool, glocc, which is handy for performing
+// such counting and pretty printing (brief or extensive) of the results.
 //
-// glocc is aggressively (...embarrassingly) parallel. The counting for every
-// file and every subdirectory is assigned to a separate goroutine. All
-// goroutines spawned are properly synchronized and their independent results
-// are merged later, on a higher level (level = on a per-subdirectory basis).
+// glocc is an aggressively parallel solution to an embarrassingly parallel
+// problem. The count for every file and every subdirectory is assigned to a
+// separate goroutine. All spawned goroutines are properly synchronized and
+// their independent results are merged later, on a higher level (level = on a
+// per-subdirectory basis).
 //
-// glocc command line tool
+// It was originally written for use with personal projects and small
+// codebases, and also to get in touch with the Go programming language.
+// Performance-wise, it can be further improved (and hopefully will be, when I
+// have more time).
 //
-// Simply call it with any number of files or directories as command line
+// Command line tool
+//
+// Simply run it with any number of files or directories as command line
 // arguments:
 //
 //	$ glocc ~/project1 ~/project2
 //
 // By default, only a summary of all counted lines is printed to the standard
-// output. To print the results extensively in a tree-like structure, it can be
-// executed with flag:
+// output. To print the results extensively in a tree-like format, it can be
+// executed with the -a flag:
 //
 //	$ glocc -a  ~/project1 ~/project2
 //
 // glocc as a package
 //
 // For use as a package, glocc exports `func CountLoc(root string) DirResult`,
-// which, given a root directory, returns a struct of type `DirResult`, a
-// custom (recursive) type that contains the results of counting all lines of
-// code under this root directory.
+// which, given a root directory, returns a struct of type DirResult, a custom
+// (recursive) type that contains the results of counting all lines of code
+// under this root directory.
 //
 // It also exports EnableLogging() and DisableLogging() functions, to enable
 // and disable verbose logging to standard error, respectively, using a
@@ -54,12 +59,13 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // 	runtime: program exceeds 10000-thread limit
 // 	fatal error: thread exhaustion
 //
-// It is planned to hack around this problem, maybe using some kind of pool or
-// something; as long as this note is here though, the bug is probably still
-// around.
+// I plan to hack around this problem once I have the time; maybe using some
+// kind of pool or something, or by spawning the goroutines in some clever way.
+// As long as this note is here though, the bug is probably still around.
 // Theoretically, a quick and dirty solution would be to increase the number of
-// operating system threads that a Go program can use, using SetMaxThreads() of
-// runtime/debug; the default value is set to 10000 threads. However, mind that
+// operating system threads that a Go program can use, using the
+// SetMaxThreads() function in runtime/debug; the default value is set to 10000
+// threads. However, mind that
 // (quoted from https://golang.org/pkg/runtime/debug/#SetMaxThreads):
 //
 // 	SetMaxThreads is useful mainly for limiting the damage done by programs

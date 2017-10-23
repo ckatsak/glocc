@@ -20,6 +20,7 @@ import (
 
 	"github.com/ckatsak/glocc"
 	"golang.org/x/sys/unix"
+	"gopkg.in/yaml.v2"
 )
 
 func init() {
@@ -40,9 +41,8 @@ func setNoFilesHardLimit() {
 	}
 }
 
-// Print the total results to the standard output in JSON format. This is the
-// default and only way to display them for now (other than printing the raw
-// Go map, which sucks).
+// Print the total results to the standard output in JSON format. It falls back
+// to printing the raw Go map in case of a failure. Maybe this should change.
 func displayJSON(res interface{}) {
 	if output, err := json.MarshalIndent(res, "", "   "); err != nil {
 		fmt.Printf("%v\n", res)
@@ -52,9 +52,15 @@ func displayJSON(res interface{}) {
 	}
 }
 
-// FIXME
+// Print the total results to the standard output in YAML format. It falls back
+// to displayJSON in case of failure during marshalling.
 func displayYAML(res interface{}) {
-	// STUB
+	if output, err := yaml.Marshal(res); err != nil {
+		displayJSON(res)
+		fmt.Fprintln(os.Stderr, err)
+	} else {
+		fmt.Println(string(output))
+	}
 }
 
 // It receives a slice of strings, the command line arguments of glocc, and
@@ -93,7 +99,7 @@ func gloccMain(args []string) glocc.DirResult {
 func main() {
 	debugPtr := flag.Bool("debug", false, "enable verbose logging to standard error; useful for debugging")
 	allPtr := flag.Bool("a", false, "show extensive results instead of just a top-level summary (default is false)")
-	outPtr := flag.String("o", "json", "choose output format; JSON and YAML are currently supported")
+	outPtr := flag.String("o", "yaml", "choose output format; JSON and YAML are currently supported")
 	timeItPtr := flag.Bool("t", false, "print the total duration of counting all arguments")
 	flag.Parse()
 

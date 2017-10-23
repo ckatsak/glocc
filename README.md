@@ -29,7 +29,7 @@ $ glocc ~/project1 ~/project2
 ```
 
 By default, only a summary of all counted lines is printed to the standard
-output. To print the results extensively in a tree-like structure, it can be
+output. To print the results extensively in a tree-like format, it can be
 executed with the `-a` flag:
 ```text
 $ glocc -a  ~/project1 ~/project2
