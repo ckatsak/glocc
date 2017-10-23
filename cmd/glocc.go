@@ -98,7 +98,7 @@ func gloccMain(args []string) glocc.DirResult {
 
 func main() {
 	debugPtr := flag.Bool("debug", false, "enable verbose logging to standard error; useful for debugging")
-	allPtr := flag.Bool("a", false, "show extensive results instead of just a top-level summary (default is false)")
+	allPtr := flag.Bool("a", false, "show extensive results instead of just a top-level summary (default is summary)")
 	outPtr := flag.String("o", "yaml", "choose output format; JSON and YAML are currently supported")
 	timeItPtr := flag.Bool("t", false, "print the total duration of counting all arguments")
 	flag.Parse()

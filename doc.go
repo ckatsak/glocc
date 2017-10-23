@@ -28,13 +28,20 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // Simply run it with any number of files or directories as command line
 // arguments:
 //
-//	$ glocc ~/project1 ~/project2
+//	$ glocc ~/foo ~/bar
 //
 // By default, only a summary of all counted lines is printed to the standard
 // output. To print the results extensively in a tree-like format, it can be
 // executed with the -a flag:
 //
-//	$ glocc -a  ~/project1 ~/project2
+//	$ glocc -a baz.go ~/foo
+//
+// The results can be printed in YAML (default) or JSON format, using the -o
+// flag:
+//
+//	$ glocc -o json ~/bar
+//
+// Running it with the -h flag shows all options available.
 //
 // glocc as a package
 //
@@ -49,7 +56,7 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // Note that verbose logging includes details about every line of every file
 // visited, which might be quite ...verbose, and not that useful.
 //
-// Known bug
+// Known Issue
 //
 // For now, really huge source trees, like the Linux kernel source tree, might
 // crash glocc, due the big number of blocked OS threads trying to handle the
@@ -71,4 +78,13 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // 	SetMaxThreads is useful mainly for limiting the damage done by programs
 //	that create an unbounded number of threads. The idea is to take down
 //	the program before it takes down the operating system.
+//
+//
+// Supported Languages
+//
+// Ada, assembly, AWK, C, C++, C#, D (not the ddoc comments), Delphi,
+// Dockerfile, Eiffel, Elixir, Erlang, Go, Haskell, HTML, Java, Javascript,
+// JSON, Kotlin, Lisp, Makefile, Matlab, OCaml, Perl (not __END__ comments),
+// PHP, PowerShell, Python, R, Ruby (not __END__ comments), Rust, Scala,
+// Scheme, shell scripts, SQL, Standard ML, TeX, Tcl, YAML.
 package glocc

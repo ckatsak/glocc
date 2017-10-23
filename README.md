@@ -20,28 +20,42 @@ and also to get in touch with the Go programming language.
 Performance-wise, it can be further improved (and hopefully will be, when I
 have more time).
 
-## Command line tool
+## Contents
+
+- [Command line tool](#command-line-tool)
+- [Platforms](#platforms)
+- [Supported Languages](#supported-languages)
+- [`glocc` as package](#glocc-as-package)
+- [Known Issue](#known-issues)
+
+## Command line tool <a name="command-line-tool"></a>
 
 Simply run it with any number of files or directories as command line
 arguments:
 ```text
-$ glocc ~/project1 ~/project2
+$ glocc ~/foo ~/bar
 ```
 
 By default, only a summary of all counted lines is printed to the standard
 output. To print the results extensively in a tree-like format, it can be
 executed with the `-a` flag:
 ```text
-$ glocc -a  ~/project1 ~/project2
+$ glocc -a  ~/baz ~/foo
+```
+
+The results can be printed in YAML (default) or JSON format, using the `-o`
+flag:
+```text
+$ glocc -o json ~/bar
 ```
 
 Running it with the `-h` flag shows all options available.
 
-## Platforms
+## Platforms <a name="platforms"></a>
 
-It has been tested only under `go version go1.9.1 linux/amd64`
+It has been tested only under `go version go1.9.1 linux/amd64`.
 
-## Supported Languages
+## Supported Languages <a name="supported-languages"></a>
 
 - Ada
 - Assembly
@@ -82,7 +96,7 @@ It has been tested only under `go version go1.9.1 linux/amd64`
 - Tcl
 - YAML
 
-## glocc as package
+## glocc as package <a name="glocc-as-package"></a>
 
 For use as a package, `glocc` exports `func CountLoc(root string) DirResult`,
 which, given a root directory, returns a struct of type `DirResult`, a
@@ -95,11 +109,12 @@ package-level logger.
 Note that verbose logging includes details about every line of every file
 visited, which might be quite ...verbose, and not that useful.
 
-## Known Issue
+## Known Issue <a name="known-issues"></a>
 
-For now, really huge source trees, like the Linux kernel source tree, might
-crash `glocc`, due the big number of blocked OS threads trying to handle the
-huge number of goroutines spawned. To be more precise, the problem is:
+For now, really huge source trees, like the Linux kernel source tree (although
+not the DragonFlyBSD, for instance), might crash `glocc`, due the big number of
+blocked OS threads trying to handle the huge number of goroutines spawned. To
+be more precise, the problem is:
 
 ```text
 $ glocc ./linux
