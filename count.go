@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-// DirResults is a tree-like (thus recursive) data structure used to store the
+// DirResult is a tree-like (thus recursive) data structure used to store the
 // results of the count for all files and subdirectories that live under the
 // directory associated with a directory.
 //
@@ -196,8 +196,11 @@ func locFile(filename string) FileResult {
 
 	ext := filepath.Ext(filename)
 	if ext == "" {
-		if filepath.Base(filename) == "Makefile" {
+		baseName := filepath.Base(filename)
+		if baseName == "Makefile" {
 			ext = "Makefile"
+		} else if baseName == "Dockerfile" {
+			ext = "Dockerfile"
 		}
 	} else {
 		// Ignore the leading dot.

@@ -23,9 +23,23 @@ type language struct {
 // currently supported by glocc.
 var allLanguages = []language{
 	{
+		name:                           "Ada",
+		extensions:                     []string{"adb", "ads"},
+		inlineCommentTokens:            []string{`--`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
 		name:                           "Assembly",
 		extensions:                     []string{"asm", "s", "S"},
 		inlineCommentTokens:            []string{`;`}, // works for NASM, but not for every assembly out there
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "AWK",
+		extensions:                     []string{"awk"},
+		inlineCommentTokens:            []string{`#`},
 		multiLineCommentStartingTokens: []string{},
 		multiLineCommentEndingTokens:   []string{},
 	},
@@ -44,11 +58,53 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{`*/`},
 	},
 	{
+		name:                           "C#",
+		extensions:                     []string{"cs"},
+		inlineCommentTokens:            []string{`//`, `///`},
+		multiLineCommentStartingTokens: []string{`/*`, `/**`},
+		multiLineCommentEndingTokens:   []string{`*/`},
+	},
+	{
 		name:                           "D",
 		extensions:                     []string{"d"},
 		inlineCommentTokens:            []string{`//`, `///`},
-		multiLineCommentStartingTokens: []string{`/*`, `/+`}, // nesting is supported, missing some tokens here
+		multiLineCommentStartingTokens: []string{`/*`, `/+`}, // nesting is supported, missing ddoc comment tokens
 		multiLineCommentEndingTokens:   []string{`*/`, `+/`}, // nesting is supported
+	},
+	{
+		name:                           "Delphi",
+		extensions:                     []string{"p", "pp", "pas"},
+		inlineCommentTokens:            []string{`//`},
+		multiLineCommentStartingTokens: []string{`(*`, `{`},
+		multiLineCommentEndingTokens:   []string{`*)`, `}`},
+	},
+	{
+		name:                           "Dockerfile",
+		extensions:                     []string{"Dockerfile"},
+		inlineCommentTokens:            []string{`#`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "Eiffel",
+		extensions:                     []string{"e"},
+		inlineCommentTokens:            []string{`--`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "Elixir",
+		extensions:                     []string{"ex", "exs"},
+		inlineCommentTokens:            []string{`%`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "Erlang",
+		extensions:                     []string{"erl", "hrl"},
+		inlineCommentTokens:            []string{`%`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
 	},
 	{
 		name:                           "Go",
@@ -86,11 +142,25 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{`*/`},
 	},
 	{
+		name:                           "JSON",
+		extensions:                     []string{"json"},
+		inlineCommentTokens:            []string{},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
 		name:                           "Kotlin",
 		extensions:                     []string{"kt", "kts"},
 		inlineCommentTokens:            []string{`//`},
 		multiLineCommentStartingTokens: []string{`/*`},
 		multiLineCommentEndingTokens:   []string{`*/`},
+	},
+	{
+		name:                           "Lisp",
+		extensions:                     []string{"lisp", "lsp", "l", "cl", "fasl"},
+		inlineCommentTokens:            []string{`;`},
+		multiLineCommentStartingTokens: []string{`#|`},
+		multiLineCommentEndingTokens:   []string{`|#`},
 	},
 	{
 		name:                           "Makefile",
@@ -114,11 +184,25 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{`*)`}, // nesting is supported
 	},
 	{
+		name:                           "Perl",
+		extensions:                     []string{"pl", "pm", "t", "pod"},
+		inlineCommentTokens:            []string{`#`},
+		multiLineCommentStartingTokens: []string{`=begin`}, //  __END__ is not supported
+		multiLineCommentEndingTokens:   []string{`=cut`},
+	},
+	{
 		name:                           "PHP",
 		extensions:                     []string{"php"},
 		inlineCommentTokens:            []string{`#`, `//`},
 		multiLineCommentStartingTokens: []string{`/*`, `/**`},
 		multiLineCommentEndingTokens:   []string{`*/`},
+	},
+	{
+		name:                           "PowerShell",
+		extensions:                     []string{"ps1"},
+		inlineCommentTokens:            []string{`#`},
+		multiLineCommentStartingTokens: []string{`<#`},
+		multiLineCommentEndingTokens:   []string{`#>`},
 	},
 	{
 		name:                           "Python",
@@ -128,10 +212,17 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{`"""`, `'''`}, // nesting is supported
 	},
 	{
+		name:                           "R",
+		extensions:                     []string{"r", "R", "RData", "rds", "rda"},
+		inlineCommentTokens:            []string{`#`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
 		name:                           "Ruby",
 		extensions:                     []string{"rb"},
 		inlineCommentTokens:            []string{`#`},
-		multiLineCommentStartingTokens: []string{`=begin`},
+		multiLineCommentStartingTokens: []string{`=begin`}, // __END__ is not supported
 		multiLineCommentEndingTokens:   []string{`=end`},
 	},
 	{
@@ -142,6 +233,20 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{`*/`},
 	},
 	{
+		name:                           "Scala",
+		extensions:                     []string{"scala", "sc"},
+		inlineCommentTokens:            []string{`//`},
+		multiLineCommentStartingTokens: []string{`/*`},
+		multiLineCommentEndingTokens:   []string{`*/`},
+	},
+	{
+		name:                           "Scheme",
+		extensions:                     []string{"scm", "ss"},
+		inlineCommentTokens:            []string{`;`},
+		multiLineCommentStartingTokens: []string{`#|`},
+		multiLineCommentEndingTokens:   []string{`|#`},
+	},
+	{
 		name:                           "Shell",
 		extensions:                     []string{"sh", "bash", "zsh", "ksh", "csh"},
 		inlineCommentTokens:            []string{`#`},
@@ -149,11 +254,39 @@ var allLanguages = []language{
 		multiLineCommentEndingTokens:   []string{},
 	},
 	{
-		name:                           "SML",
+		name:                           "SQL",
+		extensions:                     []string{"sql"},
+		inlineCommentTokens:            []string{`--`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "Standard ML",
 		extensions:                     []string{"sml"},
 		inlineCommentTokens:            []string{},
 		multiLineCommentStartingTokens: []string{`(*`},
 		multiLineCommentEndingTokens:   []string{`*)`},
+	},
+	{
+		name:                           "TeX",
+		extensions:                     []string{"tex"},
+		inlineCommentTokens:            []string{`%`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "Tcl",
+		extensions:                     []string{"tcl", "tbc"},
+		inlineCommentTokens:            []string{`#`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
+	},
+	{
+		name:                           "YAML",
+		extensions:                     []string{"yaml", "yml"},
+		inlineCommentTokens:            []string{`#`},
+		multiLineCommentStartingTokens: []string{},
+		multiLineCommentEndingTokens:   []string{},
 	},
 }
 

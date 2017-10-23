@@ -39,7 +39,7 @@ type LocCounter struct {
 	stateMultiLineComment *stateMultiLineComment
 }
 
-// NewLocCoutner returns a new LocCounter, properly initialized to count the
+// NewLocCounter returns a new LocCounter, properly initialized to count the
 // lines of code in a specific file of a specific language.
 // Returns an error if a supported language cannot be detected.
 func NewLocCounter(file *os.File, ext string) (lc *LocCounter, err error) {
