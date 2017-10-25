@@ -182,6 +182,7 @@ func (s *stateMultiLineComment) process(lc *LocCounter) bool {
 	for _, t := range lc.language.multiLineCommentEndingTokens {
 		if t == reversedToken {
 			reversedTokenIsValid = true
+			break
 		}
 	}
 	if reversedTokenIsValid {

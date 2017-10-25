@@ -46,8 +46,8 @@ type DirResults []DirResult
 // FileResult is a simple data structure used to store the results of a single
 // file's count. FileResult structs typically live inside DirResult structs.
 type FileResult struct {
-	Name string         `json:"name" yaml:"Name"`
-	Loc  map[string]int `json:"loc" yaml:"loc"`
+	Name string         `json:"name" yaml:"Name,omitempty"`
+	Loc  map[string]int `json:"loc" yaml:"loc,omitempty,inline"`
 }
 
 // Package-level logger.
@@ -88,7 +88,6 @@ func CountLoc(root string) DirResult {
 	}
 	fileinfo, err := os.Stat(rootPath)
 	if err != nil {
-		//if os.IsNotExist(err) {  // XXX What did I want this?
 		logger.Println("ERROR", err)
 		return result
 	}
@@ -98,7 +97,7 @@ func CountLoc(root string) DirResult {
 		fileResult := locFile(rootPath)
 		result.Name = fileResult.Name
 		result.Subdirs = nil
-		result.Files = []FileResult{fileResult}
+		result.Files = []FileResult{*fileResult}
 		result.Summary = fileResult.Loc
 	}
 	logger.Printf("INFO Time elapsed for %q: %s\n", root, time.Since(start))
@@ -133,7 +132,7 @@ func locDir(rootPath string) DirResult {
 
 	// Spawn one goroutine per subdirectory, and another one per file.
 	dirResultsChan := make(chan DirResult)
-	fileResultsChan := make(chan FileResult)
+	fileResultsChan := make(chan *FileResult)
 	count := 0
 	for _, fileinfo := range fileinfoz {
 		filename := filepath.Join(rootPath, fileinfo.Name())
@@ -165,12 +164,14 @@ func locDir(rootPath string) DirResult {
 				}
 			}
 		case fr := <-fileResultsChan:
-			result.Files = append(result.Files, fr)
-			for lang, loc := range fr.Loc {
-				if _, exists := result.Summary[lang]; exists {
-					result.Summary[lang] += loc
-				} else {
-					result.Summary[lang] = loc
+			if fr != nil {
+				result.Files = append(result.Files, *fr)
+				for lang, loc := range fr.Loc {
+					if _, exists := result.Summary[lang]; exists {
+						result.Summary[lang] += loc
+					} else {
+						result.Summary[lang] = loc
+					}
 				}
 			}
 		}
@@ -184,8 +185,8 @@ func locDir(rootPath string) DirResult {
 // The core function for detecting a file's type, creating a LocCounter to
 // count the lines of code in it, and finally return the results in a
 // FileResult struct.
-func locFile(filename string) FileResult {
-	result := FileResult{Loc: make(map[string]int)}
+func locFile(filename string) *FileResult {
+	var result *FileResult
 
 	file, err := os.Open(filename)
 	if err != nil {
@@ -194,9 +195,9 @@ func locFile(filename string) FileResult {
 	}
 	defer file.Close()
 
+	baseName := filepath.Base(filename)
 	ext := filepath.Ext(filename)
 	if ext == "" {
-		baseName := filepath.Base(filename)
 		if baseName == "Makefile" {
 			ext = "Makefile"
 		} else if baseName == "Dockerfile" {
@@ -212,11 +213,15 @@ func locFile(filename string) FileResult {
 		return result
 	}
 
-	if loc, err := locCounter.Count(); err != nil {
+	loc, err := locCounter.Count()
+	if err != nil {
 		logger.Println("ERROR", err)
-	} else {
-		result.Loc[languages[ext].name] = loc
-		result.Name = filepath.Base(filename)
+	}
+	result = &FileResult{
+		Name: baseName,
+		Loc: map[string]int{
+			languages[ext].name: loc,
+		},
 	}
 	return result
 }

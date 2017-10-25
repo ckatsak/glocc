@@ -1,7 +1,7 @@
 # glocc
 
-[![GoDoc](https://godoc.org/github.com/ckatsak/glocc?status.png)](https://godoc.org/github.com/ckatsak/glocc)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ckatsak/glocc)](https://goreportcard.com/badge/github.com/ckatsak/glocc)
+[![GoDoc](https://godoc.org/github.com/ckatsak/glocc?status.png)](https://godoc.org/github.com/ckatsak/glocc)
 
 `glocc` is a package implementing a relatively fast, parallel counter of lines
 of code in files and directories.
@@ -54,8 +54,9 @@ Running it with the `-h` flag shows all options available.
 
 ## Installation <a name="installation"></a>
 
-For both the package and the command line tool to be installed, assuming [Go is
-properly installed](https://golang.org/doc/install), it should be as easy as:
+To install both the package and the command line tool, assuming that [the Go
+tools are properly installed](https://golang.org/doc/install#install), it
+should be as easy as typing:
 ```text
 $ go get -u github.com/ckatsak/glocc/...
 ```
@@ -118,9 +119,12 @@ package-level logger.
 Note that verbose logging includes details about every line of every file
 visited, which might be quite ...verbose, and not that useful.
 
-## Known Issue <a name="known-issues"></a>
+## Known Issues <a name="known-issues"></a>
 
-For now, really huge source trees, like the Linux kernel source tree, might
+- For now, nested block comments aren't supported for the supported languages
+that permit it. It is going to be fixed soon.
+
+- For now, really huge source trees, like the Linux kernel source tree, might
 rarely cause `glocc` to crash, due the big number of blocked OS threads trying
 to handle the huge number of goroutines spawned. To be more precise, the exact
 problem is reported as:

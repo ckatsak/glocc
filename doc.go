@@ -56,12 +56,26 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // Note that verbose logging includes details about every line of every file
 // visited, which might be quite ...verbose, and not that useful.
 //
-// Known Issue
+// Installation
 //
-// For now, really huge source trees, like the Linux kernel source tree, might
-// rarely cause glocc to crash, due the big number of blocked OS threads trying
-// to handle the huge number of goroutines spawned. To be more precise, the
-// exact problem is reported as:
+// To install both the package and the command line tool, assuming that the Go
+// tools are properly installed, it should be as easy as typing:
+//
+//	$ go get -u github.com/ckatsak/glocc/...
+//
+// Platforms
+//
+// Until now, it has been tested only under `go version go1.9.1 linux/amd64`.
+//
+// Known Issues
+//
+// - For now, nested block comments aren't supported for the supported
+// languages that permit it. It is going to be fixed soon.
+//
+// - For now, really huge source trees, like the Linux kernel source tree,
+// might rarely cause glocc to crash, due the big number of blocked OS threads
+// trying to handle the huge number of goroutines spawned. To be more precise,
+// the exact problem is reported as:
 //
 //	$ glocc ./linux
 // 	runtime: program exceeds 10000-thread limit
@@ -81,7 +95,6 @@ of the BSD 3-Clause License. See the LICENSE file for details.
 // 	SetMaxThreads is useful mainly for limiting the damage done by programs
 //	that create an unbounded number of threads. The idea is to take down
 //	the program before it takes down the operating system.
-//
 //
 // Supported Languages
 //
