@@ -13,6 +13,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -198,9 +199,9 @@ func locFile(filename string) *FileResult {
 	baseName := filepath.Base(filename)
 	ext := filepath.Ext(filename)
 	if ext == "" {
-		if baseName == "Makefile" {
+		if strings.HasPrefix(baseName, "Makefile") {
 			ext = "Makefile"
-		} else if baseName == "Dockerfile" {
+		} else if strings.HasPrefix(baseName, "Dockerfile") {
 			ext = "Dockerfile"
 		}
 	} else {
