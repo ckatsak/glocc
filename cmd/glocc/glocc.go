@@ -41,11 +41,16 @@ func setNoFilesHardLimit() {
 	}
 }
 
+// Print the total results to the standard output in raw Go map %#v format.
+func displayRaw(res interface{}) {
+	fmt.Printf("%#v\n", res)
+}
+
 // Print the total results to the standard output in JSON format. It falls back
-// to printing the raw Go map in case of a failure. Maybe this should change.
+// to printing the raw Go map in case of a failure.
 func displayJSON(res interface{}) {
 	if output, err := json.MarshalIndent(res, "", "   "); err != nil {
-		fmt.Printf("%v\n", res)
+		displayRaw(res)
 		fmt.Fprintln(os.Stderr, err)
 	} else {
 		fmt.Println(string(output))
@@ -99,7 +104,7 @@ func gloccMain(args []string) glocc.DirResult {
 func main() {
 	debugPtr := flag.Bool("debug", false, "enable verbose logging to standard error; useful for debugging")
 	allPtr := flag.Bool("a", false, "show extensive results instead of just a top-level summary (default is summary)")
-	outPtr := flag.String("o", "yaml", "choose output format; JSON and YAML are currently supported")
+	outPtr := flag.String("o", "yaml", "choose output format; YAML, JSON and \"raw\" are currently supported")
 	timeItPtr := flag.Bool("t", false, "print the total duration of counting all arguments")
 	flag.Parse()
 
@@ -114,6 +119,8 @@ func main() {
 		displayFunc = displayJSON
 	case "yaml", "yml":
 		displayFunc = displayYAML
+	case "raw":
+		displayFunc = displayRaw
 	default:
 		flag.PrintDefaults()
 		os.Exit(1)

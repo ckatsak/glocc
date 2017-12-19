@@ -117,8 +117,8 @@ var allLanguages = []language{
 		name:                           "Haskell",
 		extensions:                     []string{"hs", "lhs"},
 		inlineCommentTokens:            []string{`--`},
-		multiLineCommentStartingTokens: []string{`{-`}, // nesting is supported
-		multiLineCommentEndingTokens:   []string{`-}`}, // nesting is supported
+		multiLineCommentStartingTokens: []string{`{-`}, // nesting is not supported
+		multiLineCommentEndingTokens:   []string{`-}`}, // nesting is not supported
 	},
 	{
 		name:                           "HTML",
@@ -187,14 +187,14 @@ var allLanguages = []language{
 		name:                           "OCaml",
 		extensions:                     []string{"ml", "mli"},
 		inlineCommentTokens:            []string{},
-		multiLineCommentStartingTokens: []string{`(*`}, // nesting is supported
-		multiLineCommentEndingTokens:   []string{`*)`}, // nesting is supported
+		multiLineCommentStartingTokens: []string{`(*`}, // nesting is not supported
+		multiLineCommentEndingTokens:   []string{`*)`}, // nesting is not supported
 	},
 	{
 		name:                           "Perl",
 		extensions:                     []string{"pl", "pm", "t", "pod"},
 		inlineCommentTokens:            []string{`#`},
-		multiLineCommentStartingTokens: []string{`=begin`}, //  __END__ is not supported
+		multiLineCommentStartingTokens: []string{`=begin`}, // __END__ is not supported
 		multiLineCommentEndingTokens:   []string{`=cut`},
 	},
 	{
@@ -210,6 +210,13 @@ var allLanguages = []language{
 		inlineCommentTokens:            []string{`#`},
 		multiLineCommentStartingTokens: []string{`<#`},
 		multiLineCommentEndingTokens:   []string{`#>`},
+	},
+	{
+		name:                           "Protocol Buffers",
+		extensions:                     []string{"proto"},
+		inlineCommentTokens:            []string{`//`},
+		multiLineCommentStartingTokens: []string{`/*`},
+		multiLineCommentEndingTokens:   []string{`*/`},
 	},
 	{
 		name:                           "Python",
