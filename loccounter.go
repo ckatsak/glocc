@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode/utf8"
 )
 
 // These states don't need to exist per LocCounter, as they don't carry any
@@ -256,23 +257,13 @@ func (s *stateCode) process(lc *LocCounter) bool {
 }
 
 // Returns the input string reversed.
-//
-// Credits to:
-// https://groups.google.com/forum/#!topic/golang-nuts/oPuBaYJ17t4
-// from which it was shamelessly copied. :D
 func reversed(s string) string {
-	// Get Unicode code points
-	n := 0
-	runes := make([]rune, len(s))
-	for _, r := range s {
-		runes[n] = r
-		n++
+	size := len(s)
+	buf := make([]byte, size)
+	for i := 0; i < size; {
+		r, n := utf8.DecodeRuneInString(s[i:])
+		i += n
+		utf8.EncodeRune(buf[(size-i):], r)
 	}
-	runes = runes[0:n]
-	// Reverse
-	for i := 0; i < n/2; i++ {
-		runes[i], runes[n-1-i] = runes[n-1-i], runes[i]
-	}
-	// Convert back to UTF-8
-	return string(runes)
+	return string(buf)
 }

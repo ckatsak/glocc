@@ -23,9 +23,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
+// Command line flags.
+var (
+	debugFlag, showAllFlag, showTimeFlag *bool
+	outFormatFlag                        *string
+)
 
 // Set the soft limit of RLIMIT_NOFILE to be equal to the hard limit, to allow
 // as many open files as possible. (How many? Check `/proc/<PID>/limits` to see
@@ -101,20 +103,24 @@ func gloccMain(args []string) glocc.DirResult {
 	return totalResults
 }
 
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	debugFlag = flag.Bool("debug", false, "enable verbose logging to standard error; useful for debugging")
+	showAllFlag = flag.Bool("a", false, "show extensive results instead of just a top-level summary (default is summary)")
+	outFormatFlag = flag.String("o", "yaml", "choose output format; YAML, JSON and \"raw\" are currently supported")
+	showTimeFlag = flag.Bool("t", false, "print the total duration of counting all arguments")
+}
+
 func main() {
-	debugPtr := flag.Bool("debug", false, "enable verbose logging to standard error; useful for debugging")
-	allPtr := flag.Bool("a", false, "show extensive results instead of just a top-level summary (default is summary)")
-	outPtr := flag.String("o", "yaml", "choose output format; YAML, JSON and \"raw\" are currently supported")
-	timeItPtr := flag.Bool("t", false, "print the total duration of counting all arguments")
 	flag.Parse()
 
-	if *debugPtr {
+	if *debugFlag {
 		glocc.EnableLogging()
 	}
 
 	var displayFunc func(interface{})
-	*outPtr = strings.ToLower(*outPtr)
-	switch *outPtr {
+	switch strings.ToLower(*outFormatFlag) {
 	case "json":
 		displayFunc = displayJSON
 	case "yaml", "yml":
@@ -132,13 +138,13 @@ func main() {
 	totalResults := gloccMain(flag.Args())
 	endTime := time.Since(startTime)
 
-	if *allPtr {
+	if *showAllFlag {
 		displayFunc(totalResults)
 	} else {
 		displayFunc(totalResults.Summary)
 	}
 
-	if *timeItPtr {
+	if *showTimeFlag {
 		fmt.Printf("Counting completed in %s.\n", endTime)
 	}
 }

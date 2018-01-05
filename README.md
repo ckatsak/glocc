@@ -37,9 +37,9 @@ arguments:
 $ glocc ~/foo src/bar
 ```
 
-By default, only a summary of all counted lines is printed to the standard
-output. To print the results extensively in a tree-like format, it can be
-executed with the `-a` flag:
+By default, only a summary of all the counting process is printed (to the
+standard output). To have the extensive results printed in a tree-like format,
+the `-a` command line flag can be used:
 ```text
 $ glocc -a baz.go ~/src/foo
 ```
@@ -63,7 +63,7 @@ $ go get -u github.com/ckatsak/glocc/...
 
 ## Platforms <a name="platforms"></a>
 
-Until now, it has been tested only under `go version go1.9.1 linux/amd64`.
+Until now, it has been tested only with Go `v1.9.1` or later, on `linux/amd64`.
 
 ## Supported Languages <a name="supported-languages"></a>
 
@@ -93,6 +93,7 @@ Until now, it has been tested only under `go version go1.9.1 linux/amd64`.
 - Perl (not `__END__` comments)
 - PHP
 - PowerShell
+- Protocol Buffers
 - Python
 - R
 - Ruby (not `__END__` comments)
@@ -121,8 +122,8 @@ visited, which might be quite ...verbose, and not that useful.
 
 ## Known Issues <a name="known-issues"></a>
 
-- For now, nested block comments aren't supported for the supported languages
-that permit it. It is going to be fixed soon.
+- For now, nested block comments are not supported for the languages (in the
+above list) that permit it.
 
 - For now, really huge source trees, like the Linux kernel source tree, might
 rarely cause `glocc` to crash, due the big number of blocked OS threads trying
