@@ -1,12 +1,12 @@
-/*
-Copyright (C) 2017, Christos Katsakioris
-All rights reserved.
-
-This software may be modified and distributed under the terms
-of the BSD 3-Clause License. See the LICENSE file for details.
-*/
+// Copyright (C) 2017, Christos Katsakioris
+// All rights reserved.
+//
+// This software may be modified and distributed under the terms
+// of the BSD 3-Clause License. See the LICENSE file for details.
 
 // The glocc command line tool.
+//
+// TODO: Documentation
 package main
 
 import (
@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/ckatsak/glocc"
-	"golang.org/x/sys/unix"
 	"gopkg.in/yaml.v2"
 )
 
@@ -28,20 +27,6 @@ var (
 	debugFlag, showAllFlag, showTimeFlag *bool
 	outFormatFlag                        *string
 )
-
-// Set the soft limit of RLIMIT_NOFILE to be equal to the hard limit, to allow
-// as many open files as possible. (How many? Check `/proc/<PID>/limits` to see
-// for yourself.)
-func setNoFilesHardLimit() {
-	var rlimit unix.Rlimit
-	if err := unix.Getrlimit(unix.RLIMIT_NOFILE, &rlimit); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-	rlimit.Cur = rlimit.Max
-	if err := unix.Setrlimit(unix.RLIMIT_NOFILE, &rlimit); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
-}
 
 // Print the total results to the standard output in raw Go map %#v format.
 func displayRaw(res interface{}) {
